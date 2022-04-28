@@ -1,37 +1,76 @@
-import React, { useRef, useState } from 'react';
-import { cloneDeep } from './utils/cloneDeep';
-import './utils/calssNames';
-// 深拷贝测试
-const x = { y: 1 };
-const h = [2, 3, x];
-const z = new Set([1, x, h, 4]);
-let y: any = {
-  a: 1,
-  b: { a1: 1, b1: { b2: { b3: 4 } } },
-  c: () => {
-    console.log('hahah');
-  },
-  d: [{ x: x }],
-  e: {},
-  f: undefined,
-  g: null,
-  h: true,
-  i: false,
-  j: BigInt(9007199254740991),
-  k: z,
-};
-// // y.m = y;
-// const dd = cloneDeep(y);
-// y.b.b1.b2.b3 = '嵌套嵌套在嵌套了改成功了吗？---b.b1.b2.b3 ';
-// y.h = '修改布尔值，你成功了吗？----y.h';
-// x.y = '修改了x.y的值';
-// y.c = '我改了函数--y.c';
-// x.__proto__ = { c: 'yu原型变了变哦' };
-// const bigType = typeof dd.j;
-// console.log(dd, 'dd----类型变化了吗？-----');
-// console.log(x, 'x----原型变化了吗？-----');
-// console.log(y, 'x---原型变化了吗？-----');
+import './utils/vegemite';
+import './utils/binarySearch';
+import React from 'react';
+import _ from 'lodash';
+import RGL, { WidthProvider } from 'react-grid-layout';
+
+const ReactGridLayout = WidthProvider(RGL);
+
+class NoDraggingLayout extends React.PureComponent {
+	static defaultProps = {
+		className: 'layout',
+		isDraggable: false,
+		isResizable: false,
+		items: 20,
+		cols: 12,
+		rowHeight: 30,
+		onLayoutChange: function () {}
+	};
+
+	constructor(props) {
+		super(props);
+
+		const layout = this.generateLayout();
+		this.state = { layout };
+	}
+
+	generateDOM() {
+		return _.map(_.range(this.props.items), function (i) {
+			return (
+				<div
+					key={i}
+					style={{
+						// backgroundColor: 'red',
+						height: Math.ceil(Math.random() * 4) + 1
+					}}
+				>
+					<span className='text'>{i}</span>
+				</div>
+			);
+		});
+	}
+
+	generateLayout() {
+		const p = this.props;
+		return _.map(new Array(p.items), function (item, i) {
+			var y = _.result(p, 'y') || Math.ceil(Math.random() * 4) + 1;
+			return {
+				x: (i * 4) % 12,
+				y: Math.floor(i / 6) * y,
+				w: 4,
+				h: y,
+				i: i.toString()
+			};
+		});
+	}
+
+	onLayoutChange(layout) {
+		this.props.onLayoutChange(layout);
+	}
+
+	render() {
+		return (
+			<ReactGridLayout
+				// layout={this.state.layout}
+				onLayoutChange={this.onLayoutChange}
+				{...this.props}
+			>
+				{this.generateDOM()}
+			</ReactGridLayout>
+		);
+	}
+}
 
 export default function App() {
-  return <div>hahahah</div>;
+	return <NoDraggingLayout></NoDraggingLayout>;
 }
