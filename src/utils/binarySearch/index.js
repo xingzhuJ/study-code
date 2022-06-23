@@ -15,7 +15,6 @@ var search = function (nums, target) {
 	let higt = nums.length - 1;
 	while (low <= higt) {
 		let centerNumber = Math.floor((low + higt) / 2);
-		console.log(centerNumber, 'centerNumber---');
 		const num = nums[centerNumber];
 		if (num === target) {
 			return centerNumber;
